@@ -19,6 +19,37 @@ public class Cliente {
         carrosAlugados.add(locacao);
     }
 
+    //Calcula o valor da locacao
+    private double valorDeUmaLocacao(Locacao locacao) {
+        double valorDaLocacao = 0.0;
+        switch(locacao.getCarro().getCodigoDoPreco()) {
+            case Automovel.BASICO:
+                valorDaLocacao = locacao.getDiasAlugados() * 90.00;
+                break;
+            case Automovel.FAMILIA:
+                valorDaLocacao = locacao.getDiasAlugados() * 130.00;
+                break;
+            case Automovel.LUXO:
+                valorDaLocacao = locacao.getDiasAlugados() * 200.00;
+                if(locacao.getDiasAlugados() > 4) {
+                    valorDaLocacao *= 0.9;
+                }
+                break;
+        }
+
+        return valorDaLocacao;
+    }
+
+    //Calcula os pontos do alugador
+    private int valorPontosAlugador(Locacao locacao) {
+        int pontos = 1; // Ponto base por locação
+        if(locacao.getCarro().getCodigoDoPreco() == Automovel.LUXO && locacao.getDiasAlugados() > 2) {
+            pontos += 2;
+        }
+        return pontos;
+    }
+
+    //Agora o extrato fica responsável apenas para exibir os dados
     public String extrato() {
         final String fimDeLinha = System.getProperty("line.separator");
         double valorTotal = 0.0;
@@ -26,54 +57,25 @@ public class Cliente {
         int sequencia = 0;
 
         Iterator<Locacao> locacoes = carrosAlugados.iterator();
+
         String resultado = "Registro de Alugueis de " + getNome() + fimDeLinha;
         resultado += String.format("Seq Automovel                    Ano da Locacao Valor Pago" + fimDeLinha);
         resultado += String.format("=== ============================ ============== ============\n");
 
         while(locacoes.hasNext()) {
-            double valorCorrente = 0.0;
-            Locacao cada = locacoes.next();
-
-            //Determina valores para cada linha de automóveis
-            switch(cada.getCarro().getCodigoDoPreco()) {
-                case Automovel.BASICO: // R$ 90.00 por dia
-                    valorCorrente += cada.getDiasAlugados() * 90.00;
-                    break;
-
-                case Automovel.FAMILIA: // R$ 130.00 por dia
-                    valorCorrente += cada.getDiasAlugados() * 130.00;
-                    break;
-
-                case Automovel.LUXO: // R$ 200.00 por dia
-                    valorCorrente += cada.getDiasAlugados() * 200.00;
-
-                    // Acima de 4 diárias tem 10% de desconto
-                    if(cada.getDiasAlugados() > 4) {
-                        valorCorrente *= 0.9;
-                    }
-                    
-                    break;
-            } //Fim do switch
-
-            //Trata de pontos de alugador frequente
-            pontosDeAlugadorFrequente++;
-
-            //Adiciona bônus para aluguel de um lançamento por pelo menos 2 dias
-            if(cada.getCarro().getCodigoDoPreco() == Automovel.LUXO && cada.getDiasAlugados() > 2) {
-                pontosDeAlugadorFrequente+= 2;
-            }
-
-            //Mostra valores para este alugel
+            Locacao locacaoAtual = locacoes.next();
+            double valorCorrente = valorDeUmaLocacao(locacaoAtual);
+            pontosDeAlugadorFrequente += valorPontosAlugador(locacaoAtual);
+            
             sequencia++;
-            resultado += String.format("%02d. %-20s         %4d           R$ %8.2f" + fimDeLinha, sequencia, cada.getCarro().getDescricao(), cada.getCarro().getAno(), valorCorrente);
+            resultado += String.format("%02d. %-20s         %4d           R$ %8.2f" + fimDeLinha, sequencia, locacaoAtual.getCarro().getDescricao(), locacaoAtual.getCarro().getAno(), valorCorrente);
 
             valorTotal += valorCorrente;
-        } //Fim do while
+        }
 
-        //Adiciona rodapé
         resultado += "============================================================" + fimDeLinha;
         resultado += String.format("Valor acumulado em diárias....................: R$ %8.2f" + fimDeLinha, valorTotal);
-        resultado += "Você acumulou " + pontosDeAlugadorFrequente + " pontos de alugador frequente";
+        resultado += "Você acumulou " + pontosDeAlugadorFrequente + " pontos de locador frequente";
 
         return resultado;
     }
