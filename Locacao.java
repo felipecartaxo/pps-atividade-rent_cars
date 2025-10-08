@@ -17,32 +17,12 @@ public class Locacao {
     }
 
     //Calcula o valor da locacao
-    public double getValorDeUmaLocacao(Locacao locacao) {
-        double valorDaLocacao = 0.0;
-        switch(locacao.getCarro().getCodigoDoPreco()) {
-            case Automovel.BASICO:
-                valorDaLocacao = locacao.getDiasAlugados() * 90.00;
-                break;
-            case Automovel.FAMILIA:
-                valorDaLocacao = locacao.getDiasAlugados() * 130.00;
-                break;
-            case Automovel.LUXO:
-                valorDaLocacao = locacao.getDiasAlugados() * 200.00;
-                if(locacao.getDiasAlugados() > 4) {
-                    valorDaLocacao *= 0.9;
-                }
-                break;
-        }
-
-        return valorDaLocacao;
+    public double getValorDeUmaLocacao() {
+       return carro.getValorDeUmaLocacao(this.diasAlugados);
     }
 
     //Calcula os pontos do alugador
-    public int getPontosDeAlugadorFrequente(Locacao locacao) {
-        int pontos = 1; // Ponto base por locação
-        if(locacao.getCarro().getCodigoDoPreco() == Automovel.LUXO && locacao.getDiasAlugados() > 2) {
-            pontos += 2;
-        }
-        return pontos;
+    public int getPontosDeAlugadorFrequente() {
+        return carro.getPontosDeAlugadorFrequente(this.diasAlugados);
     }
 }

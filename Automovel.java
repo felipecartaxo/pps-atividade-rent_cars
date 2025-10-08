@@ -35,4 +35,33 @@ public class Automovel {
     public void setCodigoPreco(int codigoDoPreco) {
         this.codigoDoPreco = codigoDoPreco;
     }
+
+    // Ajustamos o método para receber os dias alugados como parâmetro
+    public double getValorDeUmaLocacao(int diasAlugados) {
+        double valorDaLocacao = 0.0;
+        switch(this.getCodigoDoPreco()) {
+            case Automovel.BASICO:
+                valorDaLocacao = diasAlugados * 90.00;
+                break;
+            case Automovel.FAMILIA:
+                valorDaLocacao = diasAlugados * 130.00;
+                break;
+            case Automovel.LUXO:
+                valorDaLocacao = diasAlugados * 200.00;
+                if(diasAlugados > 4) {
+                    valorDaLocacao *= 0.9;
+                }
+                break;
+        }
+
+        return valorDaLocacao;
+    }
+
+    public int getPontosDeAlugadorFrequente(int diasAlugados) {
+        int pontos = 1; // Ponto base por locação
+        if(this.codigoDoPreco == Automovel.LUXO && diasAlugados > 2) {
+            pontos += 2;
+        }
+        return pontos;
+    }
 }
