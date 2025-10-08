@@ -45,7 +45,4 @@ public class Locacao {
         }
         return pontos;
     }
-
-    //Calcula o valor total de uma locacao
-
 }
