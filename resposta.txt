@@ -18,3 +18,17 @@ R: Não, pois ao criar uma nova classificação, além de adicionar a nova const
 b) E quando houver reajuste de preço? O código está pronto para executar
 facilmente um novo esquema de pontos de alugador frequente?
 R: Não, pois como a lógica de pontos é hardcoded na classe Cliente, seria necessário alterar o código diretamente na classe (também hardcoded, visto que a lógica adotada não é flexível) para ajustar o esquema de pontos.
+
+----- Perguntas da etapa 3 -----
+
+- Mova o método valorDeUmaLocacao() para a classe Locacao. Essa mudança de código causou impacto na codificação de outras classes?
+
+R: Sim, na classe Cliente, pois mesma utilizava valorDeUmaLocacao para calcular o valor e exibir o extrato. No entanto, após chamar valorDeUmaLocacao a partir de uma instância de Locacao, o código voltou a funcionar normalmente.
+
+- De acordo com a pergunta acima, mova o bloco de código de cálculo do PAF para a classe que deve ter essa responsabilidade (que detém a informação para cálculo). Depois das mudanças, compile e rode o código novamente. A saída deve ser a mesma e a classe Locadora não deve ser afetada pelas mudanças. Reflita sobre como foi o impacto desta mudança no seu código, no geral.
+
+R: Optei por realocar o método em questão para a classe Locacao, visto que a mesma possui uma instância de Automóvel, que é onde podemos verificar a categoria do veículo, e onde a própria Locacao possui a propriedade diasAlugados. Desse modo, a classe Cliente não é mais responsável por calcular o PAF, e sim a própria Locacao. Após fazer alguns ajustes (chamar o método valorPontosAlugador a partir de uma instância de Locacao), Locadora voltou a funcionar devidamente.
+
+- A modificação foi simples? Reflita sobre como foi o impacto desta mudança no seu código.
+
+R: Sim, a modificação foi simples, visto que boa parte do método já estava implementada, só tive que criar o método propriamente dito e fazer as chamadas corretamente. Sobre o impacto no código, claramente ficou mais fácil de lê-lo e de, caso necessário no futuro, sofrer alterações para receber novas funcionalidades.
