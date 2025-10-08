@@ -19,41 +19,33 @@ public class Cliente {
         carrosAlugados.add(locacao);
     }
 
-    //Calcula o valor da locacao
-    private double valorDeUmaLocacao(Locacao locacao) {
-        double valorDaLocacao = 0.0;
-        switch(locacao.getCarro().getCodigoDoPreco()) {
-            case Automovel.BASICO:
-                valorDaLocacao = locacao.getDiasAlugados() * 90.00;
-                break;
-            case Automovel.FAMILIA:
-                valorDaLocacao = locacao.getDiasAlugados() * 130.00;
-                break;
-            case Automovel.LUXO:
-                valorDaLocacao = locacao.getDiasAlugados() * 200.00;
-                if(locacao.getDiasAlugados() > 4) {
-                    valorDaLocacao *= 0.9;
-                }
-                break;
+    //Calcula o valor total das locações
+    public double getValorTotal() {
+        double valorTotal = 0.0;
+        Iterator<Locacao> locacoes = carrosAlugados.iterator();
+        while(locacoes.hasNext()) {
+            Locacao locacaoAtual = locacoes.next();
+            valorTotal += locacaoAtual.getValorDeUmaLocacao(locacaoAtual);
         }
-
-        return valorDaLocacao;
+        return valorTotal;
     }
 
-    //Calcula os pontos do alugador
-    private int valorPontosAlugador(Locacao locacao) {
-        int pontos = 1; // Ponto base por locação
-        if(locacao.getCarro().getCodigoDoPreco() == Automovel.LUXO && locacao.getDiasAlugados() > 2) {
-            pontos += 2;
+    //Calcula os pontos totais do alugador frequente
+    public int getPontosTotaisDeAlugadorFrquente() {
+        int pontosDeAlugadorFrequente = 0;
+        Iterator<Locacao> locacoes = carrosAlugados.iterator();
+        while(locacoes.hasNext()) {
+            Locacao locacaoAtual = locacoes.next();
+            pontosDeAlugadorFrequente += locacaoAtual.getPontosDeAlugadorFrequente(locacaoAtual);
         }
-        return pontos;
+        return pontosDeAlugadorFrequente;
     }
 
     //Agora o extrato fica responsável apenas para exibir os dados
     public String extrato() {
         final String fimDeLinha = System.getProperty("line.separator");
-        double valorTotal = 0.0;
-        int pontosDeAlugadorFrequente = 0;
+//        double valorTotal = 0.0;
+//        int pontosDeAlugadorFrequente = 0;
         int sequencia = 0;
 
         Iterator<Locacao> locacoes = carrosAlugados.iterator();
@@ -64,18 +56,15 @@ public class Cliente {
 
         while(locacoes.hasNext()) {
             Locacao locacaoAtual = locacoes.next();
-            double valorCorrente = valorDeUmaLocacao(locacaoAtual);
-            pontosDeAlugadorFrequente += valorPontosAlugador(locacaoAtual);
-            
-            sequencia++;
-            resultado += String.format("%02d. %-20s         %4d           R$ %8.2f" + fimDeLinha, sequencia, locacaoAtual.getCarro().getDescricao(), locacaoAtual.getCarro().getAno(), valorCorrente);
+//            pontosDeAlugadorFrequente += locacaoAtual.getPontosDeAlugadorFrequente(locacaoAtual);
 
-            valorTotal += valorCorrente;
+            sequencia++;
+            resultado += String.format("%02d. %-20s         %4d           R$ %8.2f" + fimDeLinha, sequencia, locacaoAtual.getCarro().getDescricao(), locacaoAtual.getCarro().getAno(), locacaoAtual.getValorDeUmaLocacao(locacaoAtual));
         }
 
         resultado += "============================================================" + fimDeLinha;
-        resultado += String.format("Valor acumulado em diárias....................: R$ %8.2f" + fimDeLinha, valorTotal);
-        resultado += "Você acumulou " + pontosDeAlugadorFrequente + " pontos de locador frequente";
+        resultado += String.format("Valor acumulado em diárias....................: R$ %8.2f" + fimDeLinha, getValorTotal());
+        resultado += "Você acumulou " + getPontosTotaisDeAlugadorFrquente() + " pontos de locador frequente";
 
         return resultado;
     }
