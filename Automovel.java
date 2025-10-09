@@ -1,4 +1,4 @@
-public class Automovel {
+public class Automovel implements Alugavel {
 
     public static final int BASICO = 0;
     public static final int FAMILIA = 1;

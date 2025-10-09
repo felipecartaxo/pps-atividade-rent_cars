@@ -1,14 +1,15 @@
 public class Locacao {
 
-    private Automovel carro;
+    //private Automovel carro;
+    private Alugavel carro;
     private int diasAlugados;
     
-    public Locacao(Automovel carro, int diasAlugados) {
+    public Locacao(Alugavel carro, int diasAlugados) {
         this.carro = carro;
         this.diasAlugados = diasAlugados;
     }
 
-    public Automovel getCarro() {
+    public Alugavel getCarro() {
         return carro;
     }
 
