@@ -1,19 +1,18 @@
 public class Automovel implements Alugavel {
 
-    public static final int BASICO = 0;
-    public static final int FAMILIA = 1;
-    public static final int LUXO = 2;
-
     private String descricao;
     private String placa;
     private int ano; //Ano de fabricação do automóvel
-    private int codigoDoPreco;
+    //private int codigoDoPreco;
+
+    private Classificacao classificacao;
     
-    public Automovel(String descricao, int ano, String placa, int codigoDoPreco) {
+    public Automovel(String descricao, int ano, String placa, int codigoDeClassificao) {
         this.descricao = descricao;
         this.placa = placa;
         this.ano = ano;
-        this.codigoDoPreco = codigoDoPreco;
+
+        setCodigoDeClassificacao(codigoDeClassificao);
     }
 
     public String getDescricao() {
@@ -29,39 +28,32 @@ public class Automovel implements Alugavel {
     }
 
     public int getCodigoDoPreco() {
-        return codigoDoPreco;
+        //Ajuste para que delegar a responsabilidade para o objeto concreto de Classificação
+        return classificacao.getCodigoPreco();
     }
     
-    public void setCodigoPreco(int codigoDoPreco) {
-        this.codigoDoPreco = codigoDoPreco;
+    public void setCodigoDeClassificacao(int codigoDoPreco) {
+        switch(codigoDoPreco) {
+            case 0:
+                this.classificacao = new Basico();
+                break;
+            case 1:
+                this.classificacao = new Familia();
+                break;
+            case 2:
+                this.classificacao = new Luxo();
+                break;
+            default:
+                throw new IllegalArgumentException("Código de preço inválido.");
+        }
     }
 
     // Ajustamos o método para receber os dias alugados como parâmetro
     public double getValorDeUmaLocacao(int diasAlugados) {
-        double valorDaLocacao = 0.0;
-        switch(this.getCodigoDoPreco()) {
-            case Automovel.BASICO:
-                valorDaLocacao = diasAlugados * 90.00;
-                break;
-            case Automovel.FAMILIA:
-                valorDaLocacao = diasAlugados * 130.00;
-                break;
-            case Automovel.LUXO:
-                valorDaLocacao = diasAlugados * 200.00;
-                if(diasAlugados > 4) {
-                    valorDaLocacao *= 0.9;
-                }
-                break;
-        }
-
-        return valorDaLocacao;
+        return classificacao.getValorDeUmaLocacao(diasAlugados);
     }
 
     public int getPontosDeAlugadorFrequente(int diasAlugados) {
-        int pontos = 1; // Ponto base por locação
-        if(this.codigoDoPreco == Automovel.LUXO && diasAlugados > 2) {
-            pontos += 2;
-        }
-        return pontos;
+        return classificacao.getPontosDeAlugadorFrequente(diasAlugados);
     }
 }
